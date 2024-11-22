@@ -1,43 +1,38 @@
 package Vistas;
 
 import GENERALES.ControladorDatosUsuario;
-import GENERALES.DatosUsuario;
 import Models.Usuario;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class Vista extends javax.swing.JFrame {
 
-    public Vista() {
+    private HashMap<String, Usuario> mapaUsuarios;
+    private DefaultTableModel model;
+
+    public Vista(HashMap<String, Usuario> mapaUsuarios) {
+        this.mapaUsuarios = mapaUsuarios != null ? mapaUsuarios : new HashMap<>();
         initComponents();
-         listaUsuarios = new ArrayList<>();  // Inicializamos la lista de usuarios
+        setLocationRelativeTo(null);
         inicializarVista();
     }
-    
-     private void inicializarVista() {
-         
-         // Inicializamos el modelo de la tabla
+
+    private void inicializarVista() {
+
+        // Inicializamos el modelo de la tabla
         model = new DefaultTableModel();
         model.addColumn("Nombre");
         model.addColumn("Número de Identificación");
         model.addColumn("Tipo de Usuario");
-        
-         // Asignamos el modelo a la tabla
+
+        // Asignamos el modelo a la tabla
         TblTablaRegisto.setModel(model);
-        
-         // Llamar a este método para mostrar los usuarios registrados
+
+        // Llamar a este método para mostrar los usuarios registrados
         actualizarTabla();
 
-     }
-    
-    
-    int contador = 0;   
-    private DefaultTableModel model;
-    private ArrayList<Usuario> listaUsuarios; 
-    
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -97,10 +92,25 @@ public class Vista extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nombre", "ID", "Rango"
+                "Nombre", "ID", "Tipo de usario"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        TblTablaRegisto.setRequestFocusEnabled(false);
+        TblTablaRegisto.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(TblTablaRegisto);
+        if (TblTablaRegisto.getColumnModel().getColumnCount() > 0) {
+            TblTablaRegisto.getColumnModel().getColumn(0).setResizable(false);
+            TblTablaRegisto.getColumnModel().getColumn(1).setResizable(false);
+            TblTablaRegisto.getColumnModel().getColumn(2).setResizable(false);
+        }
 
         jLabel5.setText("Nro Identificacion");
 
@@ -185,48 +195,112 @@ public class Vista extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_CboxUsuarioOAdministradorActionPerformed
 
-    
-    
+
     private void BtnLOGINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLOGINActionPerformed
-        
-        int filaSeleccionada = TblTablaRegisto.getSelectedRow(); 
-        
-        //Ingresar contraseña del usuario
-         String ContraseñaIngresada = JOptionPane.showInputDialog(null, 
-            "Por favor, ingresa tu contraseña:", 
-            "Entrada de Texto", 
-            JOptionPane.QUESTION_MESSAGE);
-         
-        if(!ControladorDatosUsuario.obtenerContraseña(filaSeleccionada).equals(ContraseñaIngresada)){
-            JOptionPane.showMessageDialog(null, "La contraseña no es correcta!", "Información", JOptionPane.ERROR_MESSAGE);
+
+        int filaSeleccionada = TblTablaRegisto.getSelectedRow();
+
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(null, "Por favor, seleccione un usuario en la tabla.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-      
-        
+
+        // Obtener el ID del usuario seleccionado
+        String nroIdentificacion = TblTablaRegisto.getValueAt(filaSeleccionada, 1).toString();
+        String tipoUsuario = (String) TblTablaRegisto.getValueAt(filaSeleccionada, 2);
+
+        // Validar existencia del usuario
+        Usuario usuario = mapaUsuarios.get(nroIdentificacion);
+        if (usuario == null) {
+            JOptionPane.showMessageDialog(null, "Usuario no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Ingresar contraseña del usuario
+        String ContraseñaIngresada = JOptionPane.showInputDialog(null,
+                "Por favor, ingresa tu contraseña:",
+                "Entrada de Texto",
+                JOptionPane.QUESTION_MESSAGE);
+
+        // Verificar el tipo de usuario
+        if (!usuario.getContraseña().equals(ContraseñaIngresada)) {
+            JOptionPane.showMessageDialog(null, "La contraseña no es correcta.", "Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
+        } else if ("Administrador".equals(usuario.getTipoUsuario())) {
+            // Cerrar la vista actual
+            this.dispose();
+
+            // Abrir VistaAdministrador
+            java.awt.EventQueue.invokeLater(() -> {
+                new VistaAdministrador(mapaUsuarios).setVisible(true);
+                JOptionPane.showMessageDialog(null, "Bienvenido, " + tipoUsuario);
+            });
+        }
+
+        if (!usuario.getContraseña().equals(ContraseñaIngresada)) {
+            JOptionPane.showMessageDialog(null, "La contraseña no es correcta.", "Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
+        } else if ("Usuario".equals(usuario.getTipoUsuario())) {
+            // Cerrar la vista actual
+            this.dispose();
+
+            // Abrir VistaAdministrador
+            java.awt.EventQueue.invokeLater(() -> {
+                new VistaUsuario(mapaUsuarios).setVisible(true);
+                JOptionPane.showMessageDialog(null, "Bienvenido, " + tipoUsuario);
+            });
+        }
 
     }//GEN-LAST:event_BtnLOGINActionPerformed
 
-    
-    
+
     private void BtnREGISTRARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnREGISTRARActionPerformed
-       
+
         String nombre = TxtNombreUsuario.getText();
         String nroIdentificacion = TxtIdentifiacion.getText();
         String contraseña = TxtContraseña.getText();
         String tipoUsuario = CboxUsuarioOAdministrador.getSelectedItem().toString();
-        
-        
-         // Crear un nuevo objeto Usuario y agregarlo a la lista
-        Usuario nuevoUsuario = new Usuario(nombre, nroIdentificacion, contraseña, tipoUsuario);
-        listaUsuarios.add(nuevoUsuario);
 
-        // Actualizar la tabla con el nuevo usuario
+        // Validaciones o excepciones
+        if (nombre.isEmpty() || nroIdentificacion.isEmpty() || contraseña.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!nombre.matches("^[a-zA-Z\\s]+$")) {
+            JOptionPane.showMessageDialog(null, "El Nombre solo debe contener letras", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (!nroIdentificacion.matches("\\d+")) {
+            JOptionPane.showMessageDialog(null, "El ID debe contener solo números.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (mapaUsuarios.containsKey(nroIdentificacion)) {
+            JOptionPane.showMessageDialog(null,
+                    "El usuario con este ID ya está registrado.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Crear y registrar nuevo usuario
+        Usuario nuevoUsuario = new Usuario(nombre, nroIdentificacion, contraseña, tipoUsuario);
+        mapaUsuarios.put(nroIdentificacion, nuevoUsuario);
+
         actualizarTabla();
-        
+
         ControladorDatosUsuario.agregarUsuario(nombre);
         ControladorDatosUsuario.AgregarContraseña(contraseña);
-        
-        contador++;       
-        
+
+        JOptionPane.showMessageDialog(null,
+                "Usuario registrado con éxito!",
+                "Registro",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        TxtNombreUsuario.setText("");
+        TxtIdentifiacion.setText("");
+        TxtContraseña.setText("");
+
     }//GEN-LAST:event_BtnREGISTRARActionPerformed
 
     public static void main(String args[]) {
@@ -253,22 +327,19 @@ public class Vista extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
+        HashMap<String, Usuario> mapaUsuarios = new HashMap<>();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Vista().setVisible(true);
+                new Vista(mapaUsuarios).setVisible(true);
             }
         });
     }
 
-    
-     public void actualizarTabla() {
-        // Limpiar la tabla antes de agregar las filas nuevas
+    public void actualizarTabla() {
         model.setRowCount(0);
-
-        // Agregar usuarios a la tabla
-        for (Usuario usuario : listaUsuarios) {
+        DefaultTableModel model = (DefaultTableModel) TblTablaRegisto.getModel();
+        for (Usuario usuario : mapaUsuarios.values()) {
             model.addRow(new Object[]{
                 usuario.getNombre(),
                 usuario.getNroIdentificacion(),
@@ -276,7 +347,7 @@ public class Vista extends javax.swing.JFrame {
             });
         }
     }
-     
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnLOGIN;
     private javax.swing.JButton BtnREGISTRAR;

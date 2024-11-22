@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class ControladorDatosUsuario {
         
     
+    
   private static ArrayList<String> AlmacenarUsuarios = new ArrayList<>();
   private static ArrayList<String> AlmacenarContraseña = new ArrayList<>();
   
@@ -32,7 +33,7 @@ public class ControladorDatosUsuario {
     
     
     
-  //Guardar la contraseña
+  //Guardar la contraseña<
 
    // Método para agregar la contraseña
     public static void AgregarContraseña(String contraseña) {

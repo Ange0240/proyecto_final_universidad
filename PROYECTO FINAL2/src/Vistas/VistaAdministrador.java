@@ -1,10 +1,48 @@
 package Vistas;
 
+import Models.Usuario;
+import java.util.HashMap;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 public class VistaAdministrador extends javax.swing.JFrame {
 
-    public VistaAdministrador() {
+    private HashMap<String, Usuario> mapaUsuarios;
+    DefaultTableModel model;
+
+    public VistaAdministrador(HashMap<String, Usuario> mapaUsuarios) {
+        this.mapaUsuarios = mapaUsuarios;
+        setLocationRelativeTo(null);
+        inicializarVistaAdministrador();
         initComponents();
+    }
+
+    private void inicializarVistaAdministrador() {
+        // Inicializamos el modelo de la tabla
+        model = new DefaultTableModel();
+        model.addColumn("Nombre");
+        model.addColumn("Número de Identificación");
+        model.addColumn("Tipo de Usuario");
+
+        // Asignamos el modelo a la tabla
+        TblUsuariosAdmin.setModel(model);
+
+        // Llamar a este método para mostrar los usuarios registrados
+        actualizarTablaAdministrador();
+    }
+
+    private void actualizarTablaAdministrador() {
+        // Limpiar la tabla antes de agregar las filas nuevas
+        model.setRowCount(0);
+
+        // Agregar usuarios a la tabla
+        for (Usuario usuario : mapaUsuarios.values()) {
+            model.addRow(new Object[]{
+                usuario.getNombre(),
+                usuario.getNroIdentificacion(),
+                usuario.getTipoUsuario()
+            });
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -16,10 +54,10 @@ public class VistaAdministrador extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         BtnAtras = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        TblTablaRegisto = new javax.swing.JTable();
+        TblUsuariosAdmin = new javax.swing.JTable();
         BtnHISTORIALCOMPRAS = new javax.swing.JButton();
         BtnELIMINAR = new javax.swing.JButton();
-        BtnCONTRASEÑA = new javax.swing.JButton();
+        BtnVERCONTRASEÑA = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -30,8 +68,13 @@ public class VistaAdministrador extends javax.swing.JFrame {
         jLabel2.setText("Administrador, verá lo que ve un usuario, usted puede editar");
 
         BtnAtras.setText("Atras");
+        BtnAtras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAtrasActionPerformed(evt);
+            }
+        });
 
-        TblTablaRegisto.setModel(new javax.swing.table.DefaultTableModel(
+        TblUsuariosAdmin.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -39,13 +82,18 @@ public class VistaAdministrador extends javax.swing.JFrame {
                 "Usuarios", "Identificacion", "Productos Comprados"
             }
         ));
-        jScrollPane1.setViewportView(TblTablaRegisto);
+        jScrollPane1.setViewportView(TblUsuariosAdmin);
 
         BtnHISTORIALCOMPRAS.setText("HISTORIAL DE COMPRAS");
 
         BtnELIMINAR.setText("ELIMINAR USUARIO");
+        BtnELIMINAR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnELIMINARActionPerformed(evt);
+            }
+        });
 
-        BtnCONTRASEÑA.setText("VER CONTRASEÑA");
+        BtnVERCONTRASEÑA.setText("VER CONTRASEÑA");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -71,7 +119,7 @@ public class VistaAdministrador extends javax.swing.JFrame {
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(48, 48, 48)
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(BtnCONTRASEÑA)
+                                        .addComponent(BtnVERCONTRASEÑA)
                                         .addComponent(BtnHISTORIALCOMPRAS)
                                         .addComponent(BtnELIMINAR)))))))
                 .addContainerGap(26, Short.MAX_VALUE))
@@ -92,7 +140,7 @@ public class VistaAdministrador extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(86, 86, 86)
-                                .addComponent(BtnCONTRASEÑA))
+                                .addComponent(BtnVERCONTRASEÑA))
                             .addComponent(BtnHISTORIALCOMPRAS, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(44, 44, 44)
                         .addComponent(BtnELIMINAR)))
@@ -104,13 +152,30 @@ public class VistaAdministrador extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void BtnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAtrasActionPerformed
+        this.dispose(); // Cerrar la vista del administrador
+        Vista vistaAnterior = new Vista(mapaUsuarios); // Reabrir la vista principal con los datos actuales
+        vistaAnterior.setVisible(true);
+    }//GEN-LAST:event_BtnAtrasActionPerformed
+
+    private void BtnELIMINARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnELIMINARActionPerformed
+        int filaSeleccionada = TblUsuariosAdmin.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String nroIdentificacion = (String) TblUsuariosAdmin.getValueAt(filaSeleccionada, 1);
+        actualizarTablaAdministrador();
+        JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_BtnELIMINARActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnAtras;
-    private javax.swing.JButton BtnCONTRASEÑA;
     private javax.swing.JButton BtnELIMINAR;
     private javax.swing.JButton BtnHISTORIALCOMPRAS;
-    private javax.swing.JTable TblTablaRegisto;
+    private javax.swing.JButton BtnVERCONTRASEÑA;
+    private javax.swing.JTable TblUsuariosAdmin;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
