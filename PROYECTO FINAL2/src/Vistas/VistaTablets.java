@@ -7,10 +7,12 @@ import TABLETS.ModeloTablets;
 import TABLETS.ControladorTablets;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class VistaTablets extends javax.swing.JFrame {
 
+    private List<String> carrito = new ArrayList<>();
     private HashMap<String, Usuario> mapaUsuarios;
     private List<ModeloTablets> listaTablets;
     private ControladorTablets controladorTablets;
@@ -21,7 +23,7 @@ public class VistaTablets extends javax.swing.JFrame {
         controladorTablets = new ControladorTablets(listaTablets);
         setSize(728, 748);
         setLocationRelativeTo(null);
-        
+
         initComponents();
         cargarTabletsEnTabla();
 
@@ -32,6 +34,16 @@ public class VistaTablets extends javax.swing.JFrame {
                 if (filaSeleccionada != -1) {
                     String modelo = TblTablets.getValueAt(filaSeleccionada, 0).toString();
                     mostrarEspecificaciones(modelo);
+                }
+            }
+        });
+
+        TblTablets.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = TblTablets.getSelectedRow();
+                if (selectedRow != -1) {
+                    String especificaciones = (String) TblTablets.getValueAt(selectedRow, 0); // Cambia el índice según tu tabla
+                    TxtEspecificacionesTablets.setText(especificaciones);
                 }
             }
         });
@@ -133,6 +145,11 @@ public class VistaTablets extends javax.swing.JFrame {
         jLabel5.setText("Agregar a:");
 
         BtnVERCARRITO.setText("VER CARRITO");
+        BtnVERCARRITO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnVERCARRITOActionPerformed(evt);
+            }
+        });
 
         TblTablets.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -248,7 +265,14 @@ public class VistaTablets extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnDESEOSActionPerformed
 
     private void BtnCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCARRITOActionPerformed
-
+        int selectedRow = TblTablets.getSelectedRow();
+        if (selectedRow != -1) {
+            String modeloSeleccionado = (String) TblTablets.getValueAt(selectedRow, 0); // Cambia el índice según tu tabla
+            carrito.add(modeloSeleccionado);
+            JOptionPane.showMessageDialog(null, "Producto añadido al carrito: " + modeloSeleccionado);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor selecciona un celular antes de añadir al carrito.");
+        }
     }//GEN-LAST:event_BtnCARRITOActionPerformed
 
     private void BtnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAtrasActionPerformed
@@ -256,6 +280,12 @@ public class VistaTablets extends javax.swing.JFrame {
         VistaUsuario vistaUsuario = new VistaUsuario(mapaUsuarios);
         vistaUsuario.setVisible(true);
     }//GEN-LAST:event_BtnAtrasActionPerformed
+
+    private void BtnVERCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVERCARRITOActionPerformed
+        this.dispose();
+        VistaCarritoDeseo vistaCarrito = new VistaCarritoDeseo(mapaUsuarios, carrito);
+        vistaCarrito.setVisible(true);
+    }//GEN-LAST:event_BtnVERCARRITOActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton BtnAtras;

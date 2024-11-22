@@ -1,11 +1,14 @@
 package Vistas;
 
 import Models.Usuario;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class VistaUsuario extends javax.swing.JFrame {
 
     private HashMap<String, Usuario> mapaUsuarios;
+    private List<String> carrito = new ArrayList<>();
 
     public VistaUsuario(HashMap<String, Usuario> mapaUsuarios) {
         this.mapaUsuarios = mapaUsuarios;
@@ -73,6 +76,11 @@ public class VistaUsuario extends javax.swing.JFrame {
         });
 
         BtnVERCARRITO.setText("VER CARRITO");
+        BtnVERCARRITO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnVERCARRITOActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -118,13 +126,12 @@ public class VistaUsuario extends javax.swing.JFrame {
                     .addComponent(BtnVERCARRITO))
                 .addGap(29, 29, 29)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(BtnAtras)
                         .addGap(64, 64, 64))
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(BtnCELULARES, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(BtnTELEVISORES, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -175,6 +182,12 @@ public class VistaUsuario extends javax.swing.JFrame {
             new VistaTablets(mapaUsuarios).setVisible(true);
         });
     }//GEN-LAST:event_BtnTABLETSActionPerformed
+
+    private void BtnVERCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVERCARRITOActionPerformed
+        this.dispose();
+        VistaCarritoDeseo vistaCarrito = new VistaCarritoDeseo(mapaUsuarios, carrito);
+        vistaCarrito.setVisible(true);
+    }//GEN-LAST:event_BtnVERCARRITOActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

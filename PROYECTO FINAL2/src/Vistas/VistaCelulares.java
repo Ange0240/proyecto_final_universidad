@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class VistaCelulares extends javax.swing.JFrame {
 
+    private List<String> carrito = new ArrayList<>();
     private HashMap<String, Usuario> mapaUsuarios;
     private List<ModeloCelulares> listaCelulares;
     private ControladorCelulares controladorCelulares;
@@ -20,12 +21,12 @@ public class VistaCelulares extends javax.swing.JFrame {
         this.mapaUsuarios = mapaUsuarios;
         setSize(728, 748);
         setLocationRelativeTo(null);
+        initComponents();
 
         // Inicializar lista de celulares y controlador
         inicializarCelulares();
         controladorCelulares = new ControladorCelulares(listaCelulares);
 
-        initComponents();
         cargarCelularesEnTabla();
 
         TblCelulares.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -35,6 +36,16 @@ public class VistaCelulares extends javax.swing.JFrame {
                 if (filaSeleccionada != -1) {
                     String modelo = TblCelulares.getValueAt(filaSeleccionada, 0).toString();
                     mostrarEspecificaciones(modelo);
+                }
+            }
+        });
+
+        TblCelulares.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = TblCelulares.getSelectedRow();
+                if (selectedRow != -1) {
+                    String especificaciones = (String) TblCelulares.getValueAt(selectedRow, 0); // Cambia el índice según tu tabla
+                    TxtEspecificacionesCelulares.setText(especificaciones);
                 }
             }
         });
@@ -204,9 +215,9 @@ public class VistaCelulares extends javax.swing.JFrame {
                         .addGap(318, 318, 318)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(65, 65, 65)
+                        .addGap(53, 53, 53)
                         .addComponent(jLabel2)
-                        .addGap(185, 185, 185)
+                        .addGap(197, 197, 197)
                         .addComponent(BtnVERCARRITO)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
@@ -261,8 +272,20 @@ public class VistaCelulares extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnAtrasActionPerformed
 
     private void BtnCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCARRITOActionPerformed
-        int selectedRow = TblCelulares.getSelectedRow();
-        
+        int selectedRow = TblCelulares.getSelectedRow(); // Obtener fila seleccionada
+        if (selectedRow != -1) {
+            // Obtener modelo y precio de la fila seleccionada
+            String modeloSeleccionado = (String) TblCelulares.getValueAt(selectedRow, 0); // Columna 0: Modelo
+            String precioSeleccionado = String.valueOf(TblCelulares.getValueAt(selectedRow, 1)); // Columna 1: Precio
+
+            // Agregar al carrito en el formato "Modelo,Precio"
+            carrito.add(modeloSeleccionado + "," + precioSeleccionado);
+
+            JOptionPane.showMessageDialog(this,
+                    "Producto añadido al carrito:\nModelo: " + modeloSeleccionado + "\nPrecio: " + precioSeleccionado);
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor selecciona un celular antes de añadir al carrito.");
+        }
     }//GEN-LAST:event_BtnCARRITOActionPerformed
 
     private void BtnDESEOSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDESEOSActionPerformed
@@ -270,7 +293,9 @@ public class VistaCelulares extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnDESEOSActionPerformed
 
     private void BtnVERCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVERCARRITOActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
+        VistaCarritoDeseo vistaCarrito = new VistaCarritoDeseo(mapaUsuarios, carrito);
+        vistaCarrito.setVisible(true);
     }//GEN-LAST:event_BtnVERCARRITOActionPerformed
 
 

@@ -4,9 +4,51 @@ import Models.Usuario;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import Models.Producto;
+import javax.swing.JOptionPane;
 
 public class VistaCarritoDeseo extends javax.swing.JFrame {
 
+    private HashMap<String, Usuario> mapaUsuarios;
+
+    public VistaCarritoDeseo(HashMap<String, Usuario> mapaUsuarios, List<String> carrito) {
+        this.mapaUsuarios = mapaUsuarios;
+        setSize(728, 748);
+        setLocationRelativeTo(null);
+        initComponents();
+        cargarCarritoEnTabla(carrito);
+    }
+
+    private void cargarCarritoEnTabla(List<String> carrito) {
+        DefaultTableModel model = (DefaultTableModel) TblCarrito.getModel();
+        model.setRowCount(0); // Limpiar la tabla
+        for (String item : carrito) {
+            String[] datos = item.split(","); // Dividir el formato "Modelo,Precio"
+            model.addRow(new Object[]{datos[0], datos[1]}); // Agregar modelo y precio
+        }
+    }
+
+    private double calcularTotal() {
+        double total = 0; // Inicializar el total
+
+        DefaultTableModel model = (DefaultTableModel) TblCarrito.getModel();
+
+        // Iterar sobre todas las filas de la tabla
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object precioObj = model.getValueAt(i, 1); // Suponiendo que los precios están en la columna 1
+            if (precioObj != null) {
+                try {
+                    // Convertir el precio a un número y sumarlo al total
+                    double precio = Double.parseDouble(precioObj.toString());
+                    total += precio;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this,
+                            "Error en el precio de la fila " + (i + 1) + ": " + precioObj);
+                }
+            }
+        }
+        return total;
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -55,6 +97,11 @@ public class VistaCarritoDeseo extends javax.swing.JFrame {
         jScrollPane2.setViewportView(TblDeseos);
 
         BtnCOMPRAR.setText("COMPRAR");
+        BtnCOMPRAR.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCOMPRARActionPerformed(evt);
+            }
+        });
 
         BtnELIMINARPRODUCTO.setText("ELIMINAR");
 
@@ -63,6 +110,11 @@ public class VistaCarritoDeseo extends javax.swing.JFrame {
         jLabel5.setText("SUS DESEOS");
 
         BtnAtras.setText("Atras");
+        BtnAtras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAtrasActionPerformed(evt);
+            }
+        });
 
         BtnELIMINARDESEO.setText("ELIMINAR");
 
@@ -137,6 +189,38 @@ public class VistaCarritoDeseo extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void BtnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAtrasActionPerformed
+        this.dispose();
+        VistaUsuario vistaUsuario = new VistaUsuario(mapaUsuarios);
+        vistaUsuario.setVisible(true);
+    }//GEN-LAST:event_BtnAtrasActionPerformed
+
+    private void BtnCOMPRARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCOMPRARActionPerformed
+        // Obtener el modelo de la tabla
+        DefaultTableModel model = (DefaultTableModel) TblCarrito.getModel();
+        double total = 0;
+
+
+        // Mostrar el total al usuario y pedir el pago
+        String mensaje = "El total de su compra es: $" + total + "\n¿Con cuánto desea pagar?";
+        String input = JOptionPane.showInputDialog(this, mensaje);
+
+        if (input != null && !input.isEmpty()) {
+            try {
+                double dineroIngresado = Double.parseDouble(input);
+                if (dineroIngresado >= total) {
+                    JOptionPane.showMessageDialog(this, "Compra realizada con éxito. Cambio: $" + (dineroIngresado - total));
+                } else {
+                    JOptionPane.showMessageDialog(this, "Dinero insuficiente para completar la compra.");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Por favor ingrese un número válido.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe ingresar una cantidad para pagar.");
+        }
+    }//GEN-LAST:event_BtnCOMPRARActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

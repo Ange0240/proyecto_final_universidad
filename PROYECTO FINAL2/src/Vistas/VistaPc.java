@@ -6,10 +6,12 @@ import java.util.List;
 import PC.ModeloPC;
 import PC.ControladorPC;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class VistaPc extends javax.swing.JFrame {
 
+    private List<String> carrito = new ArrayList<>();
     private HashMap<String, Usuario> mapaUsuarios;
     private List<ModeloPC> listaPCs;
     private ControladorPC controladorPC;
@@ -31,6 +33,16 @@ public class VistaPc extends javax.swing.JFrame {
                 if (filaSeleccionada != -1) {
                     String modelo = TblPCs.getValueAt(filaSeleccionada, 0).toString();
                     mostrarEspecificaciones(modelo);
+                }
+            }
+        });
+
+        TblPCs.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = TblPCs.getSelectedRow();
+                if (selectedRow != -1) {
+                    String especificaciones = (String) TblPCs.getValueAt(selectedRow, 0); // Cambia el índice según tu tabla
+                    TxtEspecificacionesPC.setText(especificaciones);
                 }
             }
         });
@@ -109,6 +121,11 @@ public class VistaPc extends javax.swing.JFrame {
         jLabel3.setText("PC DISPONIBLES:");
 
         BtnCARRITO.setText("CARRITO");
+        BtnCARRITO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCARRITOActionPerformed(evt);
+            }
+        });
 
         BtnAtras.setText("Atras");
         BtnAtras.addActionListener(new java.awt.event.ActionListener() {
@@ -122,6 +139,11 @@ public class VistaPc extends javax.swing.JFrame {
         jLabel5.setText("Agregar a:");
 
         BtnVERCARRITO.setText("VER CARRITO");
+        BtnVERCARRITO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnVERCARRITOActionPerformed(evt);
+            }
+        });
 
         TblPCs.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -147,23 +169,20 @@ public class VistaPc extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(BtnVERCARRITO))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(220, 220, 220))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5)
                                 .addGap(237, 237, 237))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(BtnCARRITO)
                                 .addGap(88, 88, 88)
-                                .addComponent(BtnDESEOS))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(65, 65, 65)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(BtnVERCARRITO)))
+                                .addComponent(BtnDESEOS)))))
                 .addGap(76, 76, 76))
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
@@ -191,13 +210,17 @@ public class VistaPc extends javax.swing.JFrame {
                             .addGap(21, 21, 21)
                             .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 729, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(357, 357, 357))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(25, 25, 25)
                 .addComponent(jLabel1)
-                .addGap(28, 28, 28)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(BtnVERCARRITO))
@@ -235,6 +258,23 @@ public class VistaPc extends javax.swing.JFrame {
         VistaUsuario vistaUsuario = new VistaUsuario(mapaUsuarios);
         vistaUsuario.setVisible(true);
     }//GEN-LAST:event_BtnAtrasActionPerformed
+
+    private void BtnVERCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVERCARRITOActionPerformed
+        this.dispose();
+        VistaCarritoDeseo vistaCarrito = new VistaCarritoDeseo(mapaUsuarios, carrito);
+        vistaCarrito.setVisible(true);
+    }//GEN-LAST:event_BtnVERCARRITOActionPerformed
+
+    private void BtnCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCARRITOActionPerformed
+        int selectedRow = TblPCs.getSelectedRow();
+        if (selectedRow != -1) {
+            String modeloSeleccionado = (String) TblPCs.getValueAt(selectedRow, 0); // Cambia el índice según tu tabla
+            carrito.add(modeloSeleccionado);
+            JOptionPane.showMessageDialog(null, "Producto añadido al carrito: " + modeloSeleccionado);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor selecciona un celular antes de añadir al carrito.");
+        }
+    }//GEN-LAST:event_BtnCARRITOActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

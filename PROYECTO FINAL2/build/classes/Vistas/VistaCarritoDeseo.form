@@ -201,6 +201,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="COMPRAR"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnCOMPRARActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="BtnELIMINARPRODUCTO">
       <Properties>
@@ -221,6 +224,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Atras"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnAtrasActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="BtnELIMINARDESEO">
       <Properties>

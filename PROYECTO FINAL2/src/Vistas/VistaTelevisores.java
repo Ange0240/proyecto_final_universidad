@@ -6,10 +6,12 @@ import TELEVISORES.ControladorTelevisores;
 import TELEVISORES.ModeloTelevisores;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class VistaTelevisores extends javax.swing.JFrame {
 
+    private List<String> carrito = new ArrayList<>();
     private List<ModeloTelevisores> listaTelevisores;
     private HashMap<String, Usuario> mapaUsuarios;
     private ControladorTelevisores controladorTelevisores;
@@ -20,7 +22,7 @@ public class VistaTelevisores extends javax.swing.JFrame {
         controladorTelevisores = new ControladorTelevisores(listaTelevisores);
         setSize(728, 748);
         setLocationRelativeTo(null);
-        
+
         initComponents();
         cargarTelevisoresEnTabla();
 
@@ -34,33 +36,43 @@ public class VistaTelevisores extends javax.swing.JFrame {
                 }
             }
         });
+
+        TblTelevisores.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = TblTelevisores.getSelectedRow();
+                if (selectedRow != -1) {
+                    String especificaciones = (String) TblTelevisores.getValueAt(selectedRow, 0); // Cambia el índice según tu tabla
+                    TxtEspecificacionesTelevisores.setText(especificaciones);
+                }
+            }
+        });
     }
-    
+
     private void inicializarTelevisores() {
-    listaTelevisores = new ArrayList<>();
-    listaTelevisores.add(new ModeloTelevisores("Samsung QLED 4K", 1500.00, 
-            "Pantalla: 55\"\nQLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("LG OLED 4K", 2500.00, 
-            "Pantalla: 65\"\nOLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("Sony Bravia 4K", 1800.00, 
-            "Pantalla: 55\"\nOLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("TCL 6-Series QLED", 1200.00, 
-            "Pantalla: 55\"\nQLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("Vizio 4K Smart TV", 600.00, 
-            "Pantalla: 50\"\nLED\nResolución: 4K\nHDMI: 3 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("Hisense ULED 4K", 800.00, 
-            "Pantalla: 65\"\nULED\nResolución: 4K\nHDMI: 3 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("Samsung The Frame", 2500.00, 
-            "Pantalla: 55\"\nQLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("LG NanoCell 4K", 1000.00, 
-            "Pantalla: 55\"\nNanoCell\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("Philips 4K UHD", 1200.00, 
-            "Pantalla: 65\"\nLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
-    listaTelevisores.add(new ModeloTelevisores("Sharp Aquos 4K", 900.00, 
-            "Pantalla: 60\"\nLED\nResolución: 4K\nHDMI: 3 puertos\nSmart TV"));
-}
-    
-        private void cargarTelevisoresEnTabla() {
+        listaTelevisores = new ArrayList<>();
+        listaTelevisores.add(new ModeloTelevisores("Samsung QLED 4K", 1500.00,
+                "Pantalla: 55\"\nQLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("LG OLED 4K", 2500.00,
+                "Pantalla: 65\"\nOLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("Sony Bravia 4K", 1800.00,
+                "Pantalla: 55\"\nOLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("TCL 6-Series QLED", 1200.00,
+                "Pantalla: 55\"\nQLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("Vizio 4K Smart TV", 600.00,
+                "Pantalla: 50\"\nLED\nResolución: 4K\nHDMI: 3 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("Hisense ULED 4K", 800.00,
+                "Pantalla: 65\"\nULED\nResolución: 4K\nHDMI: 3 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("Samsung The Frame", 2500.00,
+                "Pantalla: 55\"\nQLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("LG NanoCell 4K", 1000.00,
+                "Pantalla: 55\"\nNanoCell\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("Philips 4K UHD", 1200.00,
+                "Pantalla: 65\"\nLED\nResolución: 4K\nHDMI: 4 puertos\nSmart TV"));
+        listaTelevisores.add(new ModeloTelevisores("Sharp Aquos 4K", 900.00,
+                "Pantalla: 60\"\nLED\nResolución: 4K\nHDMI: 3 puertos\nSmart TV"));
+    }
+
+    private void cargarTelevisoresEnTabla() {
         DefaultTableModel modeloTabla = (DefaultTableModel) TblTelevisores.getModel();
         modeloTabla.setRowCount(0); // Limpiar tabla
         for (ModeloTelevisores Televisores : listaTelevisores) {
@@ -69,8 +81,9 @@ public class VistaTelevisores extends javax.swing.JFrame {
             row[1] = "$" + Televisores.getPrecio();
             modeloTabla.addRow(row);
         }
-        }
-            private void mostrarEspecificaciones(String modelo) {
+    }
+
+    private void mostrarEspecificaciones(String modelo) {
         ModeloTelevisores pcSeleccionado = controladorTelevisores.getEspecificaciones(modelo);
         if (pcSeleccionado != null) {
             TxtEspecificacionesTelevisores.setText(pcSeleccionado.getEspecificaciones());
@@ -108,6 +121,11 @@ public class VistaTelevisores extends javax.swing.JFrame {
         jLabel3.setText("TELEVISORES DISPONIBLES:");
 
         BtnCARRITO.setText("CARRITO");
+        BtnCARRITO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnCARRITOActionPerformed(evt);
+            }
+        });
 
         BtnAtras.setText("Atras");
         BtnAtras.addActionListener(new java.awt.event.ActionListener() {
@@ -121,6 +139,11 @@ public class VistaTelevisores extends javax.swing.JFrame {
         jLabel5.setText("Agregar a:");
 
         BtnVERCARRITO.setText("VER CARRITO");
+        BtnVERCARRITO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnVERCARRITOActionPerformed(evt);
+            }
+        });
 
         TblTelevisores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -226,6 +249,23 @@ public class VistaTelevisores extends javax.swing.JFrame {
         VistaUsuario vistaUsuario = new VistaUsuario(mapaUsuarios);
         vistaUsuario.setVisible(true);
     }//GEN-LAST:event_BtnAtrasActionPerformed
+
+    private void BtnVERCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVERCARRITOActionPerformed
+        this.dispose();
+        VistaCarritoDeseo vistaCarrito = new VistaCarritoDeseo(mapaUsuarios, carrito);
+        vistaCarrito.setVisible(true);
+    }//GEN-LAST:event_BtnVERCARRITOActionPerformed
+
+    private void BtnCARRITOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCARRITOActionPerformed
+        int selectedRow = TblTelevisores.getSelectedRow();
+        if (selectedRow != -1) {
+            String modeloSeleccionado = (String) TblTelevisores.getValueAt(selectedRow, 0); // Cambia el índice según tu tabla
+            carrito.add(modeloSeleccionado);
+            JOptionPane.showMessageDialog(null, "Producto añadido al carrito: " + modeloSeleccionado);
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor selecciona un celular antes de añadir al carrito.");
+        }
+    }//GEN-LAST:event_BtnCARRITOActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
