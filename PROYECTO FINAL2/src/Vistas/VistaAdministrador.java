@@ -12,9 +12,9 @@ public class VistaAdministrador extends javax.swing.JFrame {
 
     public VistaAdministrador(HashMap<String, Usuario> mapaUsuarios) {
         this.mapaUsuarios = mapaUsuarios;
+        initComponents();
         setLocationRelativeTo(null);
         inicializarVistaAdministrador();
-        initComponents();
     }
 
     private void inicializarVistaAdministrador() {
@@ -94,6 +94,11 @@ public class VistaAdministrador extends javax.swing.JFrame {
         });
 
         BtnVERCONTRASEÑA.setText("VER CONTRASEÑA");
+        BtnVERCONTRASEÑA.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnVERCONTRASEÑAActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -159,15 +164,52 @@ public class VistaAdministrador extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnAtrasActionPerformed
 
     private void BtnELIMINARActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnELIMINARActionPerformed
+        // Obtener la fila seleccionada
+        int selectedRow = TblUsuariosAdmin.getSelectedRow();
+
+        // Verificar si se seleccionó una fila
+        if (selectedRow != -1) {
+            // Obtener el número de identificación del usuario seleccionado (suponiendo que es el segundo campo)
+            String nroIdentificacion = (String) TblUsuariosAdmin.getValueAt(selectedRow, 1);
+
+            // Verifica si el usuario es el mismo administrador
+            Usuario usuarioSeleccionado = mapaUsuarios.get(nroIdentificacion);
+            if (usuarioSeleccionado.getTipoUsuario().equals("Administrador")) {
+                JOptionPane.showMessageDialog(this, "No puedes eliminar al administrador(tu) mientras esté logueado.");
+                return; // No eliminar al administrador
+            }
+
+            mapaUsuarios.remove(nroIdentificacion);
+
+            actualizarTablaAdministrador();
+
+            JOptionPane.showMessageDialog(this, "Usuario eliminado con éxito.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para eliminar.");
+        }
+    }//GEN-LAST:event_BtnELIMINARActionPerformed
+
+    private void BtnVERCONTRASEÑAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnVERCONTRASEÑAActionPerformed
         int filaSeleccionada = TblUsuariosAdmin.getSelectedRow();
+
+        // Verificamos si se ha seleccionado una fila
         if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para eliminar.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona un usuario para ver la contraseña.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         String nroIdentificacion = (String) TblUsuariosAdmin.getValueAt(filaSeleccionada, 1);
-        actualizarTablaAdministrador();
-        JOptionPane.showMessageDialog(this, "Usuario eliminado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_BtnELIMINARActionPerformed
+
+        // Buscar al usuario en el mapa
+        Usuario usuario = mapaUsuarios.get(nroIdentificacion);
+
+        if (usuario != null) {
+            // Mostrar la contraseña en un cuadro de diálogo
+            JOptionPane.showMessageDialog(this, "La contraseña del usuario " + usuario.getNombre() + " es: " + usuario.getContraseña(), "Contraseña del Usuario", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Usuario no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_BtnVERCONTRASEÑAActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

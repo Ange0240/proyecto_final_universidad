@@ -1,7 +1,9 @@
 package Vistas;
 
 import GENERALES.ControladorDatosUsuario;
+import GENERALES.DatosUsuario;
 import Models.Usuario;
+import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -197,58 +199,66 @@ public class Vista extends javax.swing.JFrame {
 
 
     private void BtnLOGINActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLOGINActionPerformed
+    int filaSeleccionada = TblTablaRegisto.getSelectedRow();
 
-        int filaSeleccionada = TblTablaRegisto.getSelectedRow();
+    if (filaSeleccionada == -1) {
+        JOptionPane.showMessageDialog(null, "Por favor, seleccione un usuario en la tabla.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(null, "Por favor, seleccione un usuario en la tabla.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    // Obtener el ID del usuario seleccionado y el tipo de usuario
+    String nroIdentificacion = TblTablaRegisto.getValueAt(filaSeleccionada, 1).toString();
+    String tipoUsuario = (String) TblTablaRegisto.getValueAt(filaSeleccionada, 2);
 
-        // Obtener el ID del usuario seleccionado
-        String nroIdentificacion = TblTablaRegisto.getValueAt(filaSeleccionada, 1).toString();
-        String tipoUsuario = (String) TblTablaRegisto.getValueAt(filaSeleccionada, 2);
+    // Validar existencia del usuario en el mapa
+    Usuario usuario = mapaUsuarios.get(nroIdentificacion);
+    if (usuario == null) {
+        JOptionPane.showMessageDialog(null, "Usuario no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        // Validar existencia del usuario
-        Usuario usuario = mapaUsuarios.get(nroIdentificacion);
-        if (usuario == null) {
-            JOptionPane.showMessageDialog(null, "Usuario no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    // Ingresar contraseña del usuario
+    String ContraseñaIngresada = JOptionPane.showInputDialog(null,
+            "Por favor, ingresa tu contraseña:",
+            "Entrada de Texto",
+            JOptionPane.QUESTION_MESSAGE);
 
-        // Ingresar contraseña del usuario
-        String ContraseñaIngresada = JOptionPane.showInputDialog(null,
-                "Por favor, ingresa tu contraseña:",
-                "Entrada de Texto",
-                JOptionPane.QUESTION_MESSAGE);
+    // Verificar la contraseña del usuario
+    if (!usuario.getContraseña().equals(ContraseñaIngresada)) {
+        JOptionPane.showMessageDialog(null, "La contraseña no es correcta.", "Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
+        return; // Salir del método si la contraseña no es correcta
+    }
 
-        // Verificar el tipo de usuario
-        if (!usuario.getContraseña().equals(ContraseñaIngresada)) {
-            JOptionPane.showMessageDialog(null, "La contraseña no es correcta.", "Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
-        } else if ("Administrador".equals(usuario.getTipoUsuario())) {
-            // Cerrar la vista actual
-            this.dispose();
+    // Guardar la información del usuario logueado en DatosUsuario
+    DatosUsuario.setUsuario(nroIdentificacion, filaSeleccionada);
+    DatosUsuario.setFila(filaSeleccionada); // Establecer la fila para poder acceder a datos relacionados
 
-            // Abrir VistaAdministrador
-            java.awt.EventQueue.invokeLater(() -> {
-                new VistaAdministrador(mapaUsuarios).setVisible(true);
-                JOptionPane.showMessageDialog(null, "Bienvenido, " + tipoUsuario);
-            });
-        }
+    // Establecer el carrito y la lista de deseos vacíos para este usuario (en caso de que no haya datos)
+    if (DatosUsuario.carrito[DatosUsuario.Fila] == null) {
+        DatosUsuario.carrito[DatosUsuario.Fila] = new ArrayList<>();
+    }
+    if (DatosUsuario.listaDeDeseos[DatosUsuario.Fila] == null) {
+        DatosUsuario.listaDeDeseos[DatosUsuario.Fila] = new ArrayList<>();
+    }
 
-        if (!usuario.getContraseña().equals(ContraseñaIngresada)) {
-            JOptionPane.showMessageDialog(null, "La contraseña no es correcta.", "Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
-        } else if ("Usuario".equals(usuario.getTipoUsuario())) {
-            // Cerrar la vista actual
-            this.dispose();
+    // Redirigir al usuario a la vista correspondiente según su tipo
+    if ("Administrador".equals(usuario.getTipoUsuario())) {
+        this.dispose();  // Cerrar la ventana actual
 
-            // Abrir VistaAdministrador
-            java.awt.EventQueue.invokeLater(() -> {
-                new VistaUsuario(mapaUsuarios).setVisible(true);
-                JOptionPane.showMessageDialog(null, "Bienvenido, " + tipoUsuario);
-            });
-        }
+        // Abrir la VistaAdministrador
+        java.awt.EventQueue.invokeLater(() -> {
+            new VistaAdministrador(mapaUsuarios).setVisible(true);
+            JOptionPane.showMessageDialog(null, "Bienvenido, Administrador", "Inicio de Sesión", JOptionPane.INFORMATION_MESSAGE);
+        });
+    } else if ("Usuario".equals(usuario.getTipoUsuario())) {
+        this.dispose();  // Cerrar la ventana actual
 
+        // Abrir la VistaUsuario
+        java.awt.EventQueue.invokeLater(() -> {
+            new VistaUsuario(mapaUsuarios).setVisible(true);
+            JOptionPane.showMessageDialog(null, "Bienvenido, Usuario", "Inicio de Sesión", JOptionPane.INFORMATION_MESSAGE);
+        });
+    }
     }//GEN-LAST:event_BtnLOGINActionPerformed
 
 
@@ -281,6 +291,24 @@ public class Vista extends javax.swing.JFrame {
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
             return;
+        }
+
+        if (tipoUsuario.equals("Administrador")) {
+            boolean hayAdministrador = false;
+            for (Usuario usuario : mapaUsuarios.values()) {
+                if (usuario.getTipoUsuario().equals("Administrador")) {
+                    hayAdministrador = true;
+                    break;
+                }
+            }
+
+            if (hayAdministrador) {
+                JOptionPane.showMessageDialog(null, "Ya existe un administrador registrado. Solo se puede tener uno.", "Error", JOptionPane.ERROR_MESSAGE);
+                TxtNombreUsuario.setText("");
+                TxtIdentifiacion.setText("");
+                TxtContraseña.setText("");
+                return;
+            }
         }
 
         // Crear y registrar nuevo usuario

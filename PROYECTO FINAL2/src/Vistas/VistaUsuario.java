@@ -5,16 +5,14 @@ import java.util.HashMap;
 
 public class VistaUsuario extends javax.swing.JFrame {
 
-        private HashMap<String, Usuario> mapaUsuarios;
-    
-    public VistaUsuario(HashMap<String, Usuario> mapaUsuarios) { 
+    private HashMap<String, Usuario> mapaUsuarios;
+
+    public VistaUsuario(HashMap<String, Usuario> mapaUsuarios) {
         this.mapaUsuarios = mapaUsuarios;
-        setSize(800, 600);
-        setLocationRelativeTo(null);
         initComponents();
+        setSize(728, 748);
+        setLocationRelativeTo(null);
     }
-
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -54,8 +52,18 @@ public class VistaUsuario extends javax.swing.JFrame {
         });
 
         BtnTABLETS.setText("TABLETS");
+        BtnTABLETS.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnTABLETSActionPerformed(evt);
+            }
+        });
 
         BtnPC.setText("PC");
+        BtnPC.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnPCActionPerformed(evt);
+            }
+        });
 
         BtnAtras.setText("Atras");
         BtnAtras.addActionListener(new java.awt.event.ActionListener() {
@@ -131,11 +139,19 @@ public class VistaUsuario extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnTELEVISORESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTELEVISORESActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
+
+        java.awt.EventQueue.invokeLater(() -> {
+            new VistaTelevisores(mapaUsuarios).setVisible(true);
+        });
     }//GEN-LAST:event_BtnTELEVISORESActionPerformed
 
     private void BtnCELULARESActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnCELULARESActionPerformed
-        // TODO add your handling code here:
+
+        this.dispose();
+        java.awt.EventQueue.invokeLater(() -> {
+            new VistaCelulares(mapaUsuarios).setVisible(true);
+        });
     }//GEN-LAST:event_BtnCELULARESActionPerformed
 
     private void BtnAtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAtrasActionPerformed
@@ -143,6 +159,22 @@ public class VistaUsuario extends javax.swing.JFrame {
         Vista vistaAnterior = new Vista(mapaUsuarios);
         vistaAnterior.setVisible(true);
     }//GEN-LAST:event_BtnAtrasActionPerformed
+
+    private void BtnPCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPCActionPerformed
+        this.dispose();
+
+        java.awt.EventQueue.invokeLater(() -> {
+            new VistaPc(mapaUsuarios).setVisible(true);
+        });
+    }//GEN-LAST:event_BtnPCActionPerformed
+
+    private void BtnTABLETSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTABLETSActionPerformed
+        this.dispose();
+
+        java.awt.EventQueue.invokeLater(() -> {
+            new VistaTablets(mapaUsuarios).setVisible(true);
+        });
+    }//GEN-LAST:event_BtnTABLETSActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

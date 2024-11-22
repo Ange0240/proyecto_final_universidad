@@ -1,13 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package TELEVISORES;
 
-/**
- *
- * @author jasej
- */
 public class ModeloTelevisores {
-    
+
+    private String modelo;
+    private double precio;
+    private String especificaciones;
+
+    public ModeloTelevisores(String modelo, double precio, String especificaciones) {
+        this.modelo = modelo;
+        this.precio = precio;
+        this.especificaciones = especificaciones;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public String getEspecificaciones() {
+        return especificaciones;
+    }
 }

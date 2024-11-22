@@ -1,12 +1,12 @@
 package Vistas;
 
+import Models.Usuario;
+import java.util.HashMap;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 public class VistaCarritoDeseo extends javax.swing.JFrame {
 
-    
-    public VistaCarritoDeseo() {
-        initComponents();
-    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

@@ -176,6 +176,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="VER CONTRASE&#xd1;A"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="BtnVERCONTRASE&#xd1;AActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
